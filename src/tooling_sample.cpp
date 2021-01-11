@@ -37,12 +37,12 @@ public:
       IfStmt *IfStatement = cast<IfStmt>(s);
       Stmt *Then = IfStatement->getThen();
 
-      TheRewriter.InsertText(Then->getLocStart(), "// the 'if' part\n", true,
+      TheRewriter.InsertText(Then->getBeginLoc(), "// the 'if' part\n", true,
                              true);
 
       Stmt *Else = IfStatement->getElse();
       if (Else)
-        TheRewriter.InsertText(Else->getLocStart(), "// the 'else' part\n",
+        TheRewriter.InsertText(Else->getBeginLoc(), "// the 'else' part\n",
                                true, true);
     }
 
@@ -72,7 +72,7 @@ public:
       // And after
       std::stringstream SSAfter;
       SSAfter << "\n// End function " << FuncName;
-      ST = FuncBody->getLocEnd().getLocWithOffset(1);
+      ST = FuncBody->getEndLoc().getLocWithOffset(1);
       TheRewriter.InsertText(ST, SSAfter.str(), true, true);
     }
 
@@ -121,7 +121,7 @@ public:
                                                  StringRef file) override {
     llvm::errs() << "** Creating AST consumer for: " << file << "\n";
     TheRewriter.setSourceMgr(CI.getSourceManager(), CI.getLangOpts());
-    return llvm::make_unique<MyASTConsumer>(TheRewriter);
+    return std::make_unique<MyASTConsumer>(TheRewriter);
   }
 
 private:

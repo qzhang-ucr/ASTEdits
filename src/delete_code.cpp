@@ -42,14 +42,14 @@ public:
             IfStmt *IfStatement = cast<IfStmt>(s);
             Stmt *Then = IfStatement->getThen();
 
-            TheRewriter.InsertText(Then->getLocStart(),
-                    //TheRewriter.InsertText(Then->getLocStart(),
+            TheRewriter.InsertText(Then->getBeginLoc(),
+                    //TheRewriter.InsertText(Then->getBeginLoc(),
                                    "// the 'if' part\n",
                                    true, true);
 
             Stmt *Else = IfStatement->getElse();
             if (Else)
-                TheRewriter.InsertText(Else->getLocStart(),
+                TheRewriter.InsertText(Else->getBeginLoc(),
                                        "// the 'else' part\n",
                                        true, true);
             printf("Now I will remove the if-statement\n");
@@ -83,7 +83,7 @@ public:
             // And after
             stringstream SSAfter;
             SSAfter << "\n// End function " << FuncName << "\n";
-            ST = FuncBody->getLocEnd().getLocWithOffset(1);
+            ST = FuncBody->getEndLoc().getLocWithOffset(1);
             TheRewriter.InsertText(ST, SSAfter.str(), true, true);
         }
 
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     TheRewriter.setSourceMgr(SourceMgr, TheCompInst.getLangOpts());
 
     // Set the main file handled by the source manager to the input file.
-    const FileEntry *FileIn = FileMgr.getFile(argv[1]);
+    const FileEntry *FileIn = FileMgr.getFile(argv[1]).get();
     //SourceMgr.createMainFileID(FileIn);
     SourceMgr.setMainFileID(
             SourceMgr.createFileID(FileIn, SourceLocation(), SrcMgr::C_User));

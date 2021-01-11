@@ -1,6 +1,7 @@
 #-------------------------------------------------------------------------------
 # Sample makefile for building the code samples. 
 # Edited by Qian Zhang Dec 27, 2020
+# Rewrote by Jiyuan Wang Jan 10, 2021
 #-------------------------------------------------------------------------------
 
 LLVM_SRC_PATH := $$HOME/llvm/llvm_svn_rw
@@ -14,7 +15,8 @@ $(info Using LLVM_BUILD_PATH = $(LLVM_BUILD_PATH))
 $(info Using LLVM_BIN_PATH = $(LLVM_BIN_PATH))
 $(info -----------------------------------------------)
 
-CXX := g++
+CC := /usr/local/opt/llvm/bin/clang
+CXX := $(CC)++
 CXXFLAGS := -fno-rtti -O0 -g
 PLUGIN_CXXFLAGS := -fpic
 

@@ -33,10 +33,10 @@ public:
     // The matched 'if' statement was bound to 'ifStmt'.
     if (const IfStmt *IfS = Result.Nodes.getNodeAs<clang::IfStmt>("ifStmt")) {
       const Stmt *Then = IfS->getThen();
-      Rewrite.InsertText(Then->getLocStart(), "// the 'if' part\n", true, true);
+      Rewrite.InsertText(Then->getBeginLoc(), "// the 'if' part\n", true, true);
 
       if (const Stmt *Else = IfS->getElse()) {
-        Rewrite.InsertText(Else->getLocStart(), "// the 'else' part\n", true,
+        Rewrite.InsertText(Else->getBeginLoc(), "// the 'else' part\n", true,
                            true);
       }
     }
@@ -52,7 +52,7 @@ public:
 
   virtual void run(const MatchFinder::MatchResult &Result) {
     const VarDecl *IncVar = Result.Nodes.getNodeAs<VarDecl>("incVarName");
-    Rewrite.InsertText(IncVar->getLocStart(), "/* increment */", true, true);
+    Rewrite.InsertText(IncVar->getBeginLoc(), "/* increment */", true, true);
   }
 
 private:
@@ -112,7 +112,7 @@ public:
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef file) override {
     TheRewriter.setSourceMgr(CI.getSourceManager(), CI.getLangOpts());
-    return llvm::make_unique<MyASTConsumer>(TheRewriter);
+    return std::make_unique<MyASTConsumer>(TheRewriter);
   }
 
 private:
