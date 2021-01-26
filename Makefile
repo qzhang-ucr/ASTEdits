@@ -1,12 +1,12 @@
 #-------------------------------------------------------------------------------
 # Sample makefile for building the code samples. 
 # Edited by Qian Zhang Dec 27, 2020
-# Rewrote by Jiyuan Wang Jan 10, 2021
+# Rewrote by Jiyuan Wang Jan 10,
 #-------------------------------------------------------------------------------
 
-LLVM_SRC_PATH := $$HOME/llvm/llvm_svn_rw
+LLVM_SRC_PATH := /usr/local/opt/llvm/
 
-LLVM_BUILD_PATH := $$HOME/llvm/build/svn-ninja-release
+LLVM_BUILD_PATH := /usr/local/opt/llvm
 LLVM_BIN_PATH 	:= $(LLVM_BUILD_PATH)/bin
 
 $(info -----------------------------------------------)
@@ -33,7 +33,6 @@ CLANG_INCLUDES := \
 	-I$(LLVM_BUILD_PATH)/tools/clang/include
 
 CLANG_LIBS := \
-	-Wl,--start-group \
 	-lclangAST \
 	-lclangASTMatchers \
 	-lclangAnalysis \
@@ -56,8 +55,7 @@ CLANG_LIBS := \
 	-lclangSerialization \
 	-lclangToolingCore \
 	-lclangTooling \
-	-lclangFormat \
-	-Wl,--end-group
+	-lclangFormat 
 
 # Internal paths in this project
 SRC_CLANG_DIR := src

@@ -43,7 +43,7 @@ public:
             Stmt *Then = IfStatement->getThen();
 
             TheRewriter.InsertText(Then->getBeginLoc(),
-                    //TheRewriter.InsertText(Then->getBeginLoc(),
+                    //TheRewriter.InsertText(Then->getLocStart(),
                                    "// the 'if' part\n",
                                    true, true);
 
