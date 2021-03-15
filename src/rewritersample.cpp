@@ -160,6 +160,7 @@ int main(int argc, char *argv[]) {
   // Create an AST consumer instance which is going to get called by
   // ParseAST.
   MyASTConsumer TheConsumer(TheRewriter);
+  printf("pause\n");
 
   // Parse the file to AST, registering our consumer as the AST consumer.
   ParseAST(TheCompInst.getPreprocessor(), &TheConsumer,
@@ -167,6 +168,7 @@ int main(int argc, char *argv[]) {
 
   // At this point the rewriter's buffer should be full with the rewritten
   // file contents.
+
   const RewriteBuffer *RewriteBuf =
       TheRewriter.getRewriteBufferFor(SourceMgr.getMainFileID());
   llvm::outs() << std::string(RewriteBuf->begin(), RewriteBuf->end());

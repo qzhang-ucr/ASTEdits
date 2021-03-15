@@ -66,6 +66,7 @@ all: make_builddir \
 	emit_build_config \
         $(BUILDDIR)/rewritersample \
         $(BUILDDIR)/insertsample \
+		$(BUILDDIR)/deletesample \
 	$(BUILDDIR)/matchers_rewriter \
 	$(BUILDDIR)/tooling_sample
 
@@ -86,6 +87,10 @@ $(BUILDDIR)/rewritersample: $(SRC_CLANG_DIR)/rewritersample.cpp
 		$(CLANG_LIBS) $(LLVM_LDFLAGS) -o $@
 
 $(BUILDDIR)/insertsample: $(SRC_CLANG_DIR)/insert_code.cpp
+	$(CXX) $(CXXFLAGS) $(LLVM_CXXFLAGS) $(CLANG_INCLUDES) $^ \
+		$(CLANG_LIBS) $(LLVM_LDFLAGS) -o $@
+
+$(BUILDDIR)/deletesample: $(SRC_CLANG_DIR)/delete_code.cpp
 	$(CXX) $(CXXFLAGS) $(LLVM_CXXFLAGS) $(CLANG_INCLUDES) $^ \
 		$(CLANG_LIBS) $(LLVM_LDFLAGS) -o $@
 
