@@ -51,6 +51,12 @@ public:
     return true;
   }
 
+  bool PragmaInsert(Stmt *s, std::string insert){
+    
+    
+
+    return true;
+  }
   bool VisitFunctionDecl(FunctionDecl *f) {
     // Only function definitions (with bodies), not declarations.
     if (f->hasBody()) {

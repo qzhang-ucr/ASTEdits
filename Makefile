@@ -67,6 +67,7 @@ all: make_builddir \
         $(BUILDDIR)/rewritersample \
         $(BUILDDIR)/insertsample \
 		$(BUILDDIR)/deletesample \
+		$(BUILDDIR)/movesample \
 	$(BUILDDIR)/matchers_rewriter \
 	$(BUILDDIR)/tooling_sample
 
@@ -83,6 +84,10 @@ make_builddir:
 	@test -d $(BUILDDIR) || mkdir $(BUILDDIR)
 
 $(BUILDDIR)/rewritersample: $(SRC_CLANG_DIR)/rewritersample.cpp
+	$(CXX) $(CXXFLAGS) $(LLVM_CXXFLAGS) $(CLANG_INCLUDES) $^ \
+		$(CLANG_LIBS) $(LLVM_LDFLAGS) -o $@
+
+$(BUILDDIR)/movesample: $(SRC_CLANG_DIR)/move_code.cpp
 	$(CXX) $(CXXFLAGS) $(LLVM_CXXFLAGS) $(CLANG_INCLUDES) $^ \
 		$(CLANG_LIBS) $(LLVM_LDFLAGS) -o $@
 

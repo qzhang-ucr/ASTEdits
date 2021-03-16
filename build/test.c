@@ -3,5 +3,11 @@ void foo(int* a, int *b) {
   {
     b[0] = 2;
   }
+  else
+  {
+    b[0] = 1;
+  }
 }
-void bar(float x, float y); // just a declaration
+int bar(float x, float y) {
+  return 1;
+} 

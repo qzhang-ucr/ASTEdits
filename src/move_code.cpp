@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "clang/AST/ASTConsumer.h"
+#include "clang/AST/ASTConcept.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Basic/Diagnostic.h"
 #include "clang/Basic/FileManager.h"
@@ -41,11 +42,17 @@ public:
 
       TheRewriter.InsertText(Then->getBeginLoc(), "// the 'if' part\n", true,
                              true);
+    
+
 
       Stmt *Else = IfStatement->getElse();
-      if (Else)
+      if (Else) {
         TheRewriter.InsertText(Else->getBeginLoc(), "// the 'else' part\n",
                                true, true);
+      }
+      printf("Now I will move the if-statement\n");
+      MoveContent = TheRewriter.getRewrittenText(s->getSourceRange());
+      TheRewriter.RemoveText(s->getSourceRange());
     }
 
     return true;
@@ -74,6 +81,8 @@ public:
       // And after
       std::stringstream SSAfter;
       SSAfter << "\n// End function " << FuncName;
+      ST = FuncBody->getEndLoc();
+      TheRewriter.InsertText(ST,MoveContent, true, true);
       ST = FuncBody->getEndLoc().getLocWithOffset(1);
       TheRewriter.InsertText(ST, SSAfter.str(), true, true);
     }
@@ -83,6 +92,7 @@ public:
 
 private:
   Rewriter &TheRewriter;
+  std::string MoveContent;
 };
 
 // Implementation of the ASTConsumer interface for reading an AST produced
@@ -106,7 +116,7 @@ private:
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    llvm::errs() << "Usage: rewritersample <filename>\n";
+    llvm::errs() << "Usage: move_code <filename>\n";
     return 1;
   }
 
