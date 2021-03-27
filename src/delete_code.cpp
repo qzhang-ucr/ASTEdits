@@ -38,24 +38,15 @@ public:
 
     bool VisitStmt(Stmt *s) {
         // Only care about If statements.
-        if (isa<IfStmt>(s)) {
-            IfStmt *IfStatement = cast<IfStmt>(s);
-            Stmt *Then = IfStatement->getThen();
-
-            TheRewriter.InsertText(Then->getBeginLoc(),
-                    //TheRewriter.InsertText(Then->getLocStart(),
-                                   "// the 'if' part\n",
-                                   true, true);
-
-            Stmt *Else = IfStatement->getElse();
-            if (Else)
-                TheRewriter.InsertText(Else->getBeginLoc(),
-                                       "// the 'else' part\n",
-                                       true, true);
-            printf("Now I will remove the if-statement\n");
+        if (delete_content==TheRewriter.getRewrittenText(s->getSourceRange())) {
             TheRewriter.RemoveText(s->getSourceRange());
         }
 
+        return true;
+    }
+
+    bool setArgument(std::string location_str, std::string content){    
+        delete_content = content;
         return true;
     }
 
@@ -91,9 +82,9 @@ public:
     }
 
 private:
-    void AddBraces(Stmt *s);
 
     Rewriter &TheRewriter;
+    std::string delete_content="b[0] = 1;";
 };
 
 
@@ -124,7 +115,7 @@ private:
 int main(int argc, char *argv[])
 {
     if (argc != 2) {
-        llvm::errs() << "Usage: rewritersample <filename>\n";
+        llvm::errs() << "Usage: delete_code <filename>\n";
         return 1;
     }
 

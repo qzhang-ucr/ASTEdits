@@ -35,28 +35,22 @@ public:
  
   bool VisitStmt(Stmt *s) {
     // Only care about If statements.
-    if (isa<IfStmt>(s)) {
-      IfStmt *IfStatement = cast<IfStmt>(s);
-      Stmt *Then = IfStatement->getThen();
-
-      TheRewriter.InsertText(Then->getBeginLoc(), "// the 'if' part\n", true,
+    std::string ContentOfs;
+    ContentOfs = TheRewriter.getRewrittenText(s->getSourceRange());
+    if (ContentOfs==insert_location) {
+      TheRewriter.InsertText(s->getBeginLoc().getLocWithOffset(-1), insert_content, true,
                              true);
-
-      Stmt *Else = IfStatement->getElse();
-      if (Else)
-        TheRewriter.InsertText(Else->getBeginLoc(), "// the 'else' part\n",
-                               true, true);
     }
 
     return true;
   }
 
-  bool PragmaInsert(Stmt *s, std::string insert){
-    
-    
-
+  bool setArgument(std::string location_str, std::string content){    
+    insert_location = location_str;
+    insert_content = content;
     return true;
   }
+
   bool VisitFunctionDecl(FunctionDecl *f) {
     // Only function definitions (with bodies), not declarations.
     if (f->hasBody()) {
@@ -88,6 +82,7 @@ public:
   }
 
 private:
+  std::string insert_location="b[0] = 1", insert_content="//byebye\n";
   Rewriter &TheRewriter;
 };
 
