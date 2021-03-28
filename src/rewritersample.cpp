@@ -46,20 +46,17 @@ public:
     }
     return true;
   }
+
+  bool setArgument(std::string location_str, std::string content){    
+    location_content = location_str;
+    rewrite_content = content;
+    return true;
+  }
  
   bool VisitStmt(Stmt *s) {
     // Only care about If statements.
-    if (isa<IfStmt>(s)) {
-      IfStmt *IfStatement = cast<IfStmt>(s);
-      Stmt *Then = IfStatement->getThen();
-
-      TheRewriter.InsertText(Then->getBeginLoc(), "// the 'if' part\n", true,
-                             true);
-
-      Stmt *Else = IfStatement->getElse();
-      if (Else)
-        TheRewriter.InsertText(Else->getBeginLoc(), "// the 'else' part\n",
-                               true, true);
+    if (location_content==TheRewriter.getRewrittenText(s->getSourceRange())) {
+      TheRewriter.ReplaceText(s->getSourceRange(),rewrite_content);
     }
 
     return true;
@@ -96,6 +93,7 @@ public:
   }
 
 private:
+  std::string location_content="b[0] = 1;", rewrite_content="b[2] = 1;";
   Rewriter &TheRewriter;
 };
 

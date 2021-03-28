@@ -36,25 +36,20 @@ public:
  
   bool VisitStmt(Stmt *s) {
     // Only care about If statements.
-    if (isa<IfStmt>(s)) {
-      IfStmt *IfStatement = cast<IfStmt>(s);
-      Stmt *Then = IfStatement->getThen();
+    if (end_location==TheRewriter.getRewrittenText(s->getSourceRange())) {
+      TheRewriter.InsertText(s->getBeginLoc().getLocWithOffset(-1),MoveContent);
+    }
 
-      TheRewriter.InsertText(Then->getBeginLoc(), "// the 'if' part\n", true,
-                             true);
-    
-
-
-      Stmt *Else = IfStatement->getElse();
-      if (Else) {
-        TheRewriter.InsertText(Else->getBeginLoc(), "// the 'else' part\n",
-                               true, true);
-      }
-      printf("Now I will move the if-statement\n");
-      MoveContent = TheRewriter.getRewrittenText(s->getSourceRange());
+    if (MoveContent==TheRewriter.getRewrittenText(s->getSourceRange())) {
       TheRewriter.RemoveText(s->getSourceRange());
     }
 
+    return true;
+  }
+
+  bool setArgument(std::string location_str, std::string content){    
+    end_location = location_str;
+    MoveContent = content;
     return true;
   }
 
@@ -92,7 +87,7 @@ public:
 
 private:
   Rewriter &TheRewriter;
-  std::string MoveContent;
+  std::string MoveContent, end_location; 
 };
 
 // Implementation of the ASTConsumer interface for reading an AST produced
